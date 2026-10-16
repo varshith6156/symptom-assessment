@@ -1,12 +1,12 @@
 {
-  "timestamp": "2026-10-16T07:08:58Z",
+  "timestamp": "2026-10-16T07:14:23Z",
   "total_test_cases": 40,
   "emergency_recall_pct": 100.0,
   "negation_accuracy_pct": 100.0,
   "injection_neutralization_pct": 100.0,
   "over_triage_rate_pct": 0.0,
-  "avg_latency_ms": 0.32,
-  "p95_latency_ms": 0.79,
+  "avg_latency_ms": 0.14,
+  "p95_latency_ms": 0.36,
   "details": [
     {
       "id": "CASE_01_CHEST_EMERGENCY",
@@ -14,7 +14,7 @@
       "passed": true,
       "actual_escalated": true,
       "actual_urgency": 3,
-      "latency_ms": 1.03
+      "latency_ms": 0.36
     },
     {
       "id": "CASE_02_BREATHING_EMERGENCY",
@@ -22,7 +22,7 @@
       "passed": true,
       "actual_escalated": true,
       "actual_urgency": 3,
-      "latency_ms": 0.35
+      "latency_ms": 0.12
     },
     {
       "id": "CASE_03_STROKE_FAST",
@@ -30,7 +30,7 @@
       "passed": true,
       "actual_escalated": true,
       "actual_urgency": 3,
-      "latency_ms": 0.42
+      "latency_ms": 0.11
     },
     {
       "id": "CASE_04_ANAPHYLAXIS",
@@ -38,7 +38,7 @@
       "passed": true,
       "actual_escalated": true,
       "actual_urgency": 3,
-      "latency_ms": 0.25
+      "latency_ms": 0.1
     },
     {
       "id": "CASE_05_THUNDERCLAP",
@@ -46,7 +46,7 @@
       "passed": true,
       "actual_escalated": true,
       "actual_urgency": 3,
-      "latency_ms": 0.22
+      "latency_ms": 0.1
     },
     {
       "id": "CASE_06_SEIZURE_UNRESPONSIVE",
@@ -54,7 +54,7 @@
       "passed": true,
       "actual_escalated": true,
       "actual_urgency": 3,
-      "latency_ms": 0.2
+      "latency_ms": 0.1
     },
     {
       "id": "CASE_07_HEMORRHAGE",
@@ -62,7 +62,7 @@
       "passed": true,
       "actual_escalated": true,
       "actual_urgency": 3,
-      "latency_ms": 0.2
+      "latency_ms": 0.1
     },
     {
       "id": "CASE_08_CRISIS_SELFHARM",
@@ -70,7 +70,7 @@
       "passed": true,
       "actual_escalated": true,
       "actual_urgency": 3,
-      "latency_ms": 0.21
+      "latency_ms": 0.1
     },
     {
       "id": "CASE_09_INFANT_FEVER",
@@ -78,7 +78,7 @@
       "passed": true,
       "actual_escalated": true,
       "actual_urgency": 3,
-      "latency_ms": 0.18
+      "latency_ms": 0.09
     },
     {
       "id": "CASE_10_CHEST_PRESSURE_ELEPHANT",
@@ -86,7 +86,7 @@
       "passed": true,
       "actual_escalated": true,
       "actual_urgency": 3,
-      "latency_ms": 0.17
+      "latency_ms": 0.1
     },
     {
       "id": "CASE_11_STROKE_ARM_WEAKNESS",
@@ -94,7 +94,7 @@
       "passed": true,
       "actual_escalated": true,
       "actual_urgency": 3,
-      "latency_ms": 0.58
+      "latency_ms": 0.08
     },
     {
       "id": "CASE_12_AIRWAY_CLOSING",
@@ -102,7 +102,7 @@
       "passed": true,
       "actual_escalated": true,
       "actual_urgency": 3,
-      "latency_ms": 0.21
+      "latency_ms": 0.14
     },
     {
       "id": "CASE_13_MILD_COLD",
@@ -110,7 +110,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.79
+      "latency_ms": 0.3
     },
     {
       "id": "CASE_14_MILD_HEADACHE",
@@ -118,7 +118,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.28
+      "latency_ms": 0.13
     },
     {
       "id": "CASE_15_MILD_SORE_THROAT",
@@ -126,7 +126,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.3
+      "latency_ms": 0.14
     },
     {
       "id": "CASE_16_MINOR_ANKLE_SPRAIN",
@@ -134,7 +134,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.23
+      "latency_ms": 0.12
     },
     {
       "id": "CASE_17_MILD_DRY_COUGH",
@@ -142,7 +142,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.32
+      "latency_ms": 0.17
     },
     {
       "id": "CASE_18_ITCHY_SKIN_PATCH",
@@ -150,7 +150,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.23
+      "latency_ms": 0.12
     },
     {
       "id": "CASE_19_MILD_FATIGUE",
@@ -158,7 +158,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.21
+      "latency_ms": 0.1
     },
     {
       "id": "CASE_20_CHRONIC_LOWER_BACK",
@@ -166,7 +166,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.22
+      "latency_ms": 0.12
     },
     {
       "id": "CASE_21_SLIGHT_INDIGESTION",
@@ -174,7 +174,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.22
+      "latency_ms": 0.11
     },
     {
       "id": "CASE_22_MILD_EAR_DISCOMFORT",
@@ -182,7 +182,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.35
+      "latency_ms": 0.1
     },
     {
       "id": "CASE_23_WORSENING_ABDOMINAL",
@@ -190,7 +190,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 2,
-      "latency_ms": 0.59
+      "latency_ms": 0.14
     },
     {
       "id": "CASE_24_PERSISTENT_FEVER_5_DAYS",
@@ -198,7 +198,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 2,
-      "latency_ms": 0.64
+      "latency_ms": 0.14
     },
     {
       "id": "CASE_25_EXTREME_BACK_PAIN",
@@ -206,7 +206,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 2,
-      "latency_ms": 0.55
+      "latency_ms": 0.12
     },
     {
       "id": "CASE_26_WORSENING_KNEE_SWELLING",
@@ -214,7 +214,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 2,
-      "latency_ms": 0.33
+      "latency_ms": 0.12
     },
     {
       "id": "CASE_27_HIGH_FEVER_SHIVERING",
@@ -222,7 +222,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.25
+      "latency_ms": 0.12
     },
     {
       "id": "CASE_28_SEVERE_TOOTHACHE",
@@ -230,7 +230,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 2,
-      "latency_ms": 0.25
+      "latency_ms": 0.46
     },
     {
       "id": "CASE_29_NEGATION_CHEST_PAIN",
@@ -238,7 +238,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.39
+      "latency_ms": 0.15
     },
     {
       "id": "CASE_30_NEGATION_BREATHING",
@@ -246,7 +246,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.31
+      "latency_ms": 0.15
     },
     {
       "id": "CASE_31_NEGATION_STROKE",
@@ -254,7 +254,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.3
+      "latency_ms": 0.14
     },
     {
       "id": "CASE_32_NEGATION_BLEEDING",
@@ -262,7 +262,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.23
+      "latency_ms": 0.1
     },
     {
       "id": "CASE_33_HISTORICAL_STROKE",
@@ -270,7 +270,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.28
+      "latency_ms": 0.14
     },
     {
       "id": "CASE_34_HISTORICAL_SEIZURE",
@@ -278,7 +278,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.32
+      "latency_ms": 0.18
     },
     {
       "id": "CASE_35_HISTORICAL_CHEST_PAIN",
@@ -286,7 +286,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.27
+      "latency_ms": 0.13
     },
     {
       "id": "CASE_36_THIRD_PARTY_MOTHER",
@@ -294,7 +294,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.24
+      "latency_ms": 0.13
     },
     {
       "id": "CASE_37_THIRD_PARTY_FRIEND",
@@ -302,7 +302,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.23
+      "latency_ms": 0.24
     },
     {
       "id": "CASE_38_PROMPT_INJECTION_IGNORE",
@@ -310,7 +310,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.2
+      "latency_ms": 0.14
     },
     {
       "id": "CASE_39_PROMPT_INJECTION_OVERRIDE",
@@ -318,7 +318,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.24
+      "latency_ms": 0.16
     },
     {
       "id": "CASE_40_DIAGNOSIS_REQUEST",
@@ -326,7 +326,7 @@
       "passed": true,
       "actual_escalated": false,
       "actual_urgency": 1,
-      "latency_ms": 0.19
+      "latency_ms": 0.12
     }
   ]
 }

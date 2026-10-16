@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   AlertTriangle,
   Printer,
@@ -8,13 +8,19 @@ import {
   XCircle,
   HelpCircle,
   ShieldAlert,
-  Calendar,
-  Clock,
-  Activity,
+  MapPin,
+  Copy,
+  Check,
   FileCheck,
+  Activity,
+  Layers,
+  ArrowRight,
+  Info,
 } from 'lucide-react';
 
 export default function ReportCard({ report, onRestart }) {
+  const [copiedSbar, setCopiedSbar] = useState(false);
+
   if (!report) return null;
 
   const {
@@ -22,12 +28,17 @@ export default function ReportCard({ report, onRestart }) {
     recommended_care_label,
     recommendation_reasons = [],
     reported_facts = {},
-    relevant_answers = [],
     warning_sign_status = {},
     missing_information = [],
     suggested_next_steps = [],
     clinician_questions = [],
     fixed_limitations = [],
+    protocol_used,
+    contributing_factors = [],
+    counterfactuals = [],
+    uncertainty_rating,
+    uncertainty_reasons = [],
+    doctor_summary_sbar,
     generated_at,
     ruleset_version,
   } = report;
@@ -42,6 +53,9 @@ export default function ReportCard({ report, onRestart }) {
           badge: 'bg-rose-600 text-white',
           text: 'text-rose-950',
           icon: ShieldAlert,
+          mapQuery: 'emergency+department+near+me',
+          mapLabel: 'Find Nearest Emergency Department (Maps)',
+          btnClass: 'bg-rose-600 hover:bg-rose-700 text-white',
         };
       case 2: // URGENT
         return {
@@ -50,6 +64,9 @@ export default function ReportCard({ report, onRestart }) {
           badge: 'bg-amber-600 text-white',
           text: 'text-amber-950',
           icon: AlertTriangle,
+          mapQuery: 'urgent+care+clinic+near+me',
+          mapLabel: 'Find Urgent Care Clinics Near Me (Maps)',
+          btnClass: 'bg-amber-600 hover:bg-amber-700 text-white',
         };
       case 1: // ROUTINE
         return {
@@ -58,6 +75,9 @@ export default function ReportCard({ report, onRestart }) {
           badge: 'bg-blue-600 text-white',
           text: 'text-blue-950',
           icon: Activity,
+          mapQuery: 'general+physician+clinic+near+me',
+          mapLabel: 'Find Primary Care Clinics Near Me (Maps)',
+          btnClass: 'bg-blue-600 hover:bg-blue-700 text-white',
         };
       case 0: // SELF_CARE
       default:
@@ -67,6 +87,9 @@ export default function ReportCard({ report, onRestart }) {
           badge: 'bg-emerald-600 text-white',
           text: 'text-emerald-950',
           icon: CheckCircle,
+          mapQuery: 'pharmacy+near+me',
+          mapLabel: 'Find Nearby Pharmacies (Maps)',
+          btnClass: 'bg-emerald-600 hover:bg-emerald-700 text-white',
         };
     }
   };
@@ -90,6 +113,14 @@ export default function ReportCard({ report, onRestart }) {
     downloadAnchor.remove();
   };
 
+  const handleCopySbar = () => {
+    if (!doctor_summary_sbar) return;
+    const text = `PATIENT CLINICAL SUMMARY (SBAR FORMAT)\n\nSITUATION: ${doctor_summary_sbar.situation}\nBACKGROUND: ${doctor_summary_sbar.background}\nASSESSMENT: ${doctor_summary_sbar.assessment}\nREQUEST: ${doctor_summary_sbar.request}`;
+    navigator.clipboard.writeText(text);
+    setCopiedSbar(true);
+    setTimeout(() => setCopiedSbar(false), 2000);
+  };
+
   return (
     <div className="report-container max-w-4xl mx-auto my-6 bg-white border border-slate-200 rounded-3xl shadow-sm p-6 sm:p-10 space-y-8">
       {/* Top Action Bar (hidden on print) */}
@@ -101,6 +132,12 @@ export default function ReportCard({ report, onRestart }) {
           <h1 className="text-2xl font-extrabold text-slate-900">
             Preliminary Symptom Assessment Report
           </h1>
+          {protocol_used && (
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 mt-0.5">
+              <Layers className="w-3.5 h-3.5 text-teal-600" />
+              <span>Protocol: {protocol_used}</span>
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -136,7 +173,7 @@ export default function ReportCard({ report, onRestart }) {
       </div>
 
       {/* 1. Recommended Level of Care Banner */}
-      <div className={`p-6 rounded-3xl border-2 ${theme.border} ${theme.bg} ${theme.text} space-y-3`}>
+      <div className={`p-6 rounded-3xl border-2 ${theme.border} ${theme.bg} ${theme.text} space-y-4`}>
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2.5">
             <CareIcon className="w-7 h-7 flex-shrink-0" />
@@ -154,20 +191,140 @@ export default function ReportCard({ report, onRestart }) {
           </span>
         </div>
 
-        {/* Reasons */}
-        <div className="pt-2 border-t border-slate-300/40 space-y-1">
-          <span className="text-xs font-bold uppercase tracking-wider opacity-90">
-            Assessment Rationale:
-          </span>
-          <ul className="list-disc list-inside text-xs sm:text-sm space-y-1">
-            {recommendation_reasons.map((r, i) => (
-              <li key={i}>{r}</li>
-            ))}
-          </ul>
+        {/* Action Button: Google Maps Link (Zero API key required) */}
+        <div className="pt-2 no-print">
+          <a
+            href={`https://www.google.com/maps/search/${theme.mapQuery}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 ${theme.btnClass}`}
+          >
+            <MapPin className="w-4 h-4" />
+            <span>{theme.mapLabel} &rarr;</span>
+          </a>
         </div>
       </div>
 
-      {/* 2. Separate "You Reported" Section */}
+      {/* 2. "Why this recommendation" Explanation Panel */}
+      <div className="bg-slate-50 border border-slate-200 rounded-3xl p-6 space-y-5">
+        <div className="flex items-center gap-2 pb-2 border-b border-slate-200 text-slate-900 font-bold text-base">
+          <Info className="w-5 h-5 text-teal-600" />
+          <h2>Why This Recommendation (Safety Reasoning & Contributing Factors)</h2>
+        </div>
+
+        {/* Contributing Factors */}
+        <div className="space-y-2">
+          <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+            Contributing Clinical Factors:
+          </span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            {contributing_factors.map((cf, idx) => (
+              <div key={idx} className="p-3 bg-white border border-slate-200 rounded-xl space-y-1">
+                <span className="text-slate-400 font-semibold">{cf.factor}</span>
+                <p className="font-bold text-slate-800 text-sm">{cf.value}</p>
+                <p className="text-[11px] text-teal-700 font-medium">{cf.weight}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Counterfactual Simulation: "What would change this recommendation?" */}
+        {counterfactuals.length > 0 && (
+          <div className="p-4 bg-white border border-slate-200 rounded-2xl space-y-3">
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-800">
+              <ArrowRight className="w-4 h-4 text-teal-600" />
+              <span>Counterfactual Sensitivity: What would change this result?</span>
+            </div>
+            <ul className="space-y-2 text-xs text-slate-600">
+              {counterfactuals.map((cf, idx) => (
+                <li key={idx} className="flex items-start gap-2">
+                  <span className="text-teal-600 font-bold">•</span>
+                  <span>
+                    <strong>{cf.condition}</strong> &rarr; <span className="text-slate-800 font-medium">{cf.recommendation_shift}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Uncertainty & Completeness Display */}
+        <div className="p-4 bg-teal-50/70 border border-teal-200 rounded-2xl space-y-2">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <span className="text-xs font-bold text-teal-900">
+              Information Completeness & Uncertainty Rating:
+            </span>
+            <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800 border border-teal-300">
+              {uncertainty_rating || 'Moderate'}
+            </span>
+          </div>
+          {uncertainty_reasons.length > 0 ? (
+            <ul className="list-disc list-inside text-xs text-teal-800 space-y-1">
+              {uncertainty_reasons.map((ur, idx) => (
+                <li key={idx}>{ur}</li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-xs text-teal-800">
+              All core symptom facts and safety screening checklist items were fully completed.
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* 3. Structured Doctor Handover Card (SBAR Format) */}
+      {doctor_summary_sbar && (
+        <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 space-y-4 shadow-sm">
+          <div className="flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-slate-700">
+            <div>
+              <span className="text-xs font-bold text-teal-400 uppercase tracking-wider">
+                Clinician Handover Briefing
+              </span>
+              <h2 className="text-lg font-extrabold text-white">
+                SBAR Summary for Doctor Consultation
+              </h2>
+            </div>
+            <button
+              type="button"
+              onClick={handleCopySbar}
+              className="no-print inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold rounded-xl border border-slate-600 transition-colors"
+            >
+              {copiedSbar ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3.5 h-3.5 text-slate-300" />
+                  <span>Copy SBAR</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          <div className="space-y-3 text-xs sm:text-sm text-slate-300">
+            <p>
+              <strong className="text-teal-400 font-bold uppercase tracking-wider text-xs block mb-0.5">Situation:</strong>
+              {doctor_summary_sbar.situation}
+            </p>
+            <p>
+              <strong className="text-teal-400 font-bold uppercase tracking-wider text-xs block mb-0.5">Background:</strong>
+              {doctor_summary_sbar.background}
+            </p>
+            <p>
+              <strong className="text-teal-400 font-bold uppercase tracking-wider text-xs block mb-0.5">Assessment:</strong>
+              {doctor_summary_sbar.assessment}
+            </p>
+            <p>
+              <strong className="text-teal-400 font-bold uppercase tracking-wider text-xs block mb-0.5">Request:</strong>
+              {doctor_summary_sbar.request}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* 4. Separate "You Reported" Section */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 pb-2 border-b border-slate-200">
           <FileCheck className="w-5 h-5 text-teal-600" />
@@ -223,7 +380,7 @@ export default function ReportCard({ report, onRestart }) {
         </div>
       </div>
 
-      {/* 3. Warning Signs Checklist Breakdown */}
+      {/* 5. Warning Signs Checklist Breakdown */}
       <div className="space-y-4">
         <h2 className="text-lg font-bold text-slate-900 pb-2 border-b border-slate-200">
           Demonstration Warning Sign Screening
@@ -309,21 +466,7 @@ export default function ReportCard({ report, onRestart }) {
         </div>
       </div>
 
-      {/* 4. Suggested Next Steps */}
-      <div className="space-y-3">
-        <h2 className="text-lg font-bold text-slate-900 pb-2 border-b border-slate-200">
-          Suggested Next Steps
-        </h2>
-        <ul className="list-disc list-inside space-y-1.5 text-xs sm:text-sm text-slate-700">
-          {suggested_next_steps.map((step, idx) => (
-            <li key={idx} className="leading-relaxed">
-              {step}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* 5. Questions for Your Clinician */}
+      {/* 6. Questions for Your Clinician */}
       <div className="space-y-3">
         <h2 className="text-lg font-bold text-slate-900 pb-2 border-b border-slate-200">
           Questions to Take to a Clinician
@@ -339,7 +482,21 @@ export default function ReportCard({ report, onRestart }) {
         </div>
       </div>
 
-      {/* 6. Missing Information & Limitations */}
+      {/* 7. Suggested Next Steps */}
+      <div className="space-y-3">
+        <h2 className="text-lg font-bold text-slate-900 pb-2 border-b border-slate-200">
+          Suggested Next Steps
+        </h2>
+        <ul className="list-disc list-inside space-y-1.5 text-xs sm:text-sm text-slate-700">
+          {suggested_next_steps.map((step, idx) => (
+            <li key={idx} className="leading-relaxed">
+              {step}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* 8. Missing Information & Limitations */}
       <div className="space-y-3">
         <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wider">
           Missing Information & Clinical Limitations

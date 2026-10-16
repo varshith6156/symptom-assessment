@@ -1,0 +1,59 @@
+{
+  "protocol_id": "PROTO_GENERAL",
+  "symptom_key": "general",
+  "display_name": "General Symptom Exploration Protocol",
+  "clinician_review_status": "unreviewed_demo_protocol_v1",
+  "version": "1.0",
+  "core_questions": [
+    {
+      "id": "Q_GEN_ONSET",
+      "field": "onset",
+      "question": "When did you first notice these symptoms, and have they been continuous or coming and going?",
+      "quick_replies": ["Started today", "Started yesterday", "2-3 days ago", "More than a week ago"],
+      "safety_implication": "Distinguishes hyperacute, acute, subacute, and chronic presentations."
+    },
+    {
+      "id": "Q_GEN_SEVERITY",
+      "field": "severity",
+      "question": "On a scale from 0 to 10 (where 0 is no discomfort and 10 is unbearable pain), how would you describe the severity?",
+      "quick_replies": ["Mild (1-3)", "Moderate (4-6)", "Severe (7-8)", "Very Severe (9-10)"],
+      "safety_implication": "Severity >= 8 indicates higher urgency."
+    },
+    {
+      "id": "Q_GEN_CONTEXT",
+      "field": "age_group",
+      "question": "What age group applies to the person experiencing these symptoms, and are there any pre-existing health conditions?",
+      "quick_replies": ["Adult (18-64)", "Older Adult (65+)", "Child (2-17)", "Infant (< 1 year)"],
+      "safety_implication": "Age extremes (< 3 months, > 65) or chronic conditions alter triage thresholds."
+    }
+  ],
+  "warning_signs": [
+    {
+      "id": "RULE_SEV_BREATHING",
+      "label": "Severe Breathing Difficulty",
+      "escalation_level": 3
+    },
+    {
+      "id": "RULE_CHEST_PAIN",
+      "label": "Crushing Chest Pain",
+      "escalation_level": 3
+    }
+  ],
+  "counterfactuals": [
+    {
+      "condition": "If acute difficulty breathing, chest pain, or slurred speech develops",
+      "resulting_urgency": 3,
+      "recommendation_shift": "Immediate Emergency (Level 3)"
+    },
+    {
+      "condition": "If symptoms progressively worsen or severity reaches 8-10",
+      "resulting_urgency": 2,
+      "recommendation_shift": "Urgent Medical Care (Level 2)"
+    },
+    {
+      "condition": "If symptoms remain mild and resolve within 48-72 hours",
+      "resulting_urgency": 0,
+      "recommendation_shift": "Self-Care & Monitoring (Level 0)"
+    }
+  ]
+}

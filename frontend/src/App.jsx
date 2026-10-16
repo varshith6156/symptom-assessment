@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { HeartPulse, ShieldAlert, Info } from 'lucide-react';
+import { HeartPulse, ShieldAlert, BarChart3, Globe } from 'lucide-react';
 import Landing from './pages/Landing';
 import Assessment from './pages/Assessment';
 import Results from './pages/Results';
 import Safety from './pages/Safety';
+import EvaluationModal from './components/EvaluationModal';
 import { useAssessment } from './hooks/useAssessment';
 
 export default function App() {
   const assessmentHook = useAssessment();
   const [isStarting, setIsStarting] = useState(false);
+  const [isAuditOpen, setIsAuditOpen] = useState(false);
+  const [currentLang, setCurrentLang] = useState('en'); // 'en', 'hi', 'te'
 
   const handleStart = async () => {
     setIsStarting(true);
@@ -35,12 +38,61 @@ export default function App() {
                   Med<span className="text-teal-600">+</span>Care
                 </span>
                 <span className="block text-[10px] text-slate-400 font-medium leading-none">
-                  Preliminary Symptom Assessment
+                  {currentLang === 'hi'
+                    ? 'प्रारंभिक लक्षण मूल्यांकन'
+                    : currentLang === 'te'
+                    ? 'ప్రాథమిక లక్షణాల అంచనా'
+                    : 'Preliminary Symptom Assessment'}
                 </span>
               </div>
             </Link>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* Language Selector */}
+              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-bold text-slate-700">
+                <Globe className="w-3.5 h-3.5 text-slate-400 ml-1" />
+                <button
+                  type="button"
+                  onClick={() => setCurrentLang('en')}
+                  className={`px-2 py-0.5 rounded-lg transition-colors ${
+                    currentLang === 'en' ? 'bg-white shadow-2xs text-teal-800' : 'text-slate-500 hover:text-slate-800'
+                  }`}
+                >
+                  EN
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrentLang('hi')}
+                  className={`px-2 py-0.5 rounded-lg transition-colors ${
+                    currentLang === 'hi' ? 'bg-white shadow-2xs text-teal-800' : 'text-slate-500 hover:text-slate-800'
+                  }`}
+                  title="हिंदी (Hindi)"
+                >
+                  हिं
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrentLang('te')}
+                  className={`px-2 py-0.5 rounded-lg transition-colors ${
+                    currentLang === 'te' ? 'bg-white shadow-2xs text-teal-800' : 'text-slate-500 hover:text-slate-800'
+                  }`}
+                  title="తెలుగు (Telugu)"
+                >
+                  తె
+                </button>
+              </div>
+
+              {/* Evaluation Audit Button */}
+              <button
+                type="button"
+                onClick={() => setIsAuditOpen(true)}
+                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-teal-700 hover:bg-slate-100 rounded-lg transition-colors"
+                title="View evaluated safety metrics across 40 test cases"
+              >
+                <BarChart3 className="w-4 h-4 text-teal-600" />
+                <span>Safety Audit (40 Cases)</span>
+              </button>
+
               <Link
                 to="/safety"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-teal-700 hover:bg-slate-100 rounded-lg transition-colors"
@@ -70,20 +122,24 @@ export default function App() {
                 <Landing
                   onStartAssessment={handleStart}
                   isStarting={isStarting}
+                  lang={currentLang}
                 />
               }
             />
             <Route
               path="/assessment"
-              element={<Assessment assessmentHook={assessmentHook} />}
+              element={<Assessment assessmentHook={assessmentHook} lang={currentLang} />}
             />
             <Route
               path="/results"
-              element={<Results assessmentHook={assessmentHook} />}
+              element={<Results assessmentHook={assessmentHook} lang={currentLang} />}
             />
-            <Route path="/safety" element={<Safety />} />
+            <Route path="/safety" element={<Safety lang={currentLang} />} />
           </Routes>
         </div>
+
+        {/* Evaluation Scorecard Modal */}
+        <EvaluationModal isOpen={isAuditOpen} onClose={() => setIsAuditOpen(false)} />
       </div>
     </Router>
   );

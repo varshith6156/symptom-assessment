@@ -1,7 +1,29 @@
 import React from 'react';
 import { AlertTriangle, PhoneCall } from 'lucide-react';
 
-export default function EmergencyBanner({ emergencyNumber = '911', emergencyRegion = 'US / Canada' }) {
+export default function EmergencyBanner({ emergencyNumber = '911', emergencyRegion = 'US / Canada', lang = 'en' }) {
+  const getBannerText = () => {
+    if (lang === 'hi') {
+      return (
+        <span>
+          <strong className="font-semibold text-rose-700">चिकित्सा आपातकालीन सूचना:</strong> यदि आपको सीने में दर्द, सांस लेने में गंभीर कठिनाई, स्ट्रोक के लक्षण या अत्यधिक रक्तस्राव हो रहा है, तो तुरंत आपातकालीन सहायता लें।
+        </span>
+      );
+    }
+    if (lang === 'te') {
+      return (
+        <span>
+          <strong className="font-semibold text-rose-700">వైద్య అత్యవసర నోటీసు:</strong> మీకు ఛాతీ నొప్పి, తీవ్రమైన శ్వాస ఆడకపోవడం, పక్షవాతం లక్షణాలు లేదా అధిక రక్తస్రావం ఉంటే, వెంటనే అత్యవసర వైద్య సంరక్షణను పొందండి.
+        </span>
+      );
+    }
+    return (
+      <span>
+        <strong className="font-semibold text-rose-700">Medical Emergency Notice:</strong> If you are experiencing chest pain, severe shortness of breath, stroke symptoms, or sudden severe bleeding, seek emergency care immediately.
+      </span>
+    );
+  };
+
   return (
     <div
       role="alert"
@@ -11,9 +33,7 @@ export default function EmergencyBanner({ emergencyNumber = '911', emergencyRegi
       <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-center sm:text-left">
           <AlertTriangle className="w-5 h-5 text-rose-600 flex-shrink-0" />
-          <span>
-            <strong className="font-semibold text-rose-700">Medical Emergency Notice:</strong> If you are experiencing chest pain, severe shortness of breath, stroke symptoms, or sudden severe bleeding, seek emergency care immediately.
-          </span>
+          {getBannerText()}
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           {emergencyNumber ? (

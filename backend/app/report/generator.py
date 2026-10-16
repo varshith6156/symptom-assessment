@@ -14,6 +14,7 @@ from app.report.templates import (
     FIXED_LIMITATIONS,
     NEXT_STEPS_BY_URGENCY,
 )
+from app.protocols.loader import protocol_loader
 
 class ReportNotReadyError(Exception):
     def __init__(self, missing_criteria: List[str]):
@@ -153,6 +154,60 @@ class ReportGenerator:
                 f"Given my {state.facts.chief_complaint} that started {state.facts.onset or 'recently'}, what should I watch for?",
             )
 
+        # 7. Protocol Matching & Counterfactuals
+        proto = protocol_loader.match_protocol(state.facts.chief_complaint or "")
+        counterfactuals = proto.get("counterfactuals", [])
+
+        # 8. Contributing Factors for "Why this recommendation" explanation panel
+        contributing_factors = []
+        if state.escalated:
+            contributing_factors.append({
+                "factor": "Emergency Red Flag Triggered",
+                "value": state.escalation_reason or "Acute Emergency Sign",
+                "weight": "Dominant (Overrides all other factors to Level 3)"
+            })
+        if state.facts.severity is not None:
+            contributing_factors.append({
+                "factor": "Reported Severity Score",
+                "value": f"{state.facts.severity} / 10",
+                "weight": "High weight" if state.facts.severity >= 8 else "Moderate weight"
+            })
+        if state.facts.worsening_status:
+            contributing_factors.append({
+                "factor": "Symptom Trajectory",
+                "value": state.facts.worsening_status.capitalize(),
+                "weight": "Elevates urgency" if state.facts.worsening_status == "worsening" else "Neutral"
+            })
+        if state.facts.onset:
+            contributing_factors.append({
+                "factor": "Onset & Duration",
+                "value": f"{state.facts.onset} ({state.facts.duration or 'duration unstated'})",
+                "weight": "Establishes acute vs subacute presentation"
+            })
+
+        # 9. Uncertainty & Information Completeness Rating
+        uncertainty_reasons = []
+        if unknown_warning_count > 0:
+            uncertainty_reasons.append(f"{unknown_warning_count} safety checklist question(s) remained uncertain / not sure.")
+        if not state.facts.age_group:
+            uncertainty_reasons.append("Exact age group was not confirmed.")
+        if not state.facts.relevant_conditions:
+            uncertainty_reasons.append("Pre-existing health conditions or baseline history unconfirmed.")
+
+        if uncertainty_reasons:
+            uncertainty_rating = "Moderate Uncertainty (Information Gaps Present)"
+        else:
+            uncertainty_rating = "Low Uncertainty (High Information Completeness)"
+
+        # 10. Structured Doctor Handover Card (SBAR Format)
+        age_str = (state.facts.age_group or "Adult").replace("_", " ").capitalize()
+        sbar = {
+            "situation": f"{age_str} reporting {state.facts.chief_complaint or 'symptoms'} rated at {state.facts.severity or 'unrated'}/10 severity.",
+            "background": f"Began {state.facts.onset or 'recently'} ({state.facts.duration or 'unstated duration'}). Progression: {state.facts.worsening_status or 'stable'}. Past conditions: {', '.join(state.facts.relevant_conditions) if state.facts.relevant_conditions else 'None reported'}.",
+            "assessment": f"Preliminary navigation level: {urgency_to_label(care_level)}. Demonstration safety screening completed ({len(warning_status['present'])} red flags present, {len(warning_status['absent'])} explicitly absent).",
+            "request": f"In-person clinical evaluation to establish definitive diagnosis, assess symptom cause, and recommend appropriate therapy.",
+        }
+
         return Report(
             session_id=state.session_id,
             recommended_care_level=care_level,
@@ -167,6 +222,12 @@ class ReportGenerator:
             fixed_limitations=FIXED_LIMITATIONS,
             generated_at=datetime.now(timezone.utc),
             ruleset_version="demo-rules-v1.0 (unreviewed prototype)",
+            protocol_used=proto.get("display_name", "General Exploration Protocol"),
+            contributing_factors=contributing_factors,
+            counterfactuals=counterfactuals,
+            uncertainty_rating=uncertainty_rating,
+            uncertainty_reasons=uncertainty_reasons,
+            doctor_summary_sbar=sbar,
         )
 
 report_generator = ReportGenerator()

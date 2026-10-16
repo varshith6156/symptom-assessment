@@ -1,0 +1,59 @@
+{
+  "protocol_id": "PROTO_HEADACHE",
+  "symptom_key": "headache",
+  "display_name": "Headache & Cranial Discomfort",
+  "clinician_review_status": "unreviewed_demo_protocol_v1",
+  "version": "1.0",
+  "core_questions": [
+    {
+      "id": "Q_HEADACHE_ONSET",
+      "field": "onset",
+      "question": "How quickly did the headache start? Did it peak suddenly within seconds (like a thunderclap), or build up gradually?",
+      "quick_replies": ["Built up gradually", "Struck suddenly in seconds", "Woke up with it", "Coming and going for days"],
+      "safety_implication": "Sudden explosive onset (thunderclap) is a potential intracranial red flag."
+    },
+    {
+      "id": "Q_HEADACHE_SEVERITY",
+      "field": "severity",
+      "question": "On a scale from 0 to 10 (where 10 is the worst pain of your life), what is the severity right now?",
+      "quick_replies": ["Mild (1-3)", "Moderate (4-6)", "Severe (7-8)", "Worst of life (10)"],
+      "safety_implication": "Extreme severity >= 9 or 'worst headache of life' requires emergency escalation."
+    },
+    {
+      "id": "Q_HEADACHE_ASSOCIATED",
+      "field": "associated_symptoms",
+      "question": "Do you have any stiff neck, fever, vision changes, or sensitivity to light/sound?",
+      "quick_replies": ["No other symptoms", "Sensitivity to light/sound", "Stiff neck and high fever", "Vision changes"],
+      "safety_implication": "Stiff neck with fever may indicate meningitis; vision changes may indicate neurological involvement."
+    }
+  ],
+  "warning_signs": [
+    {
+      "id": "RULE_THUNDERCLAP_HEADACHE",
+      "label": "Thunderclap / Worst Headache of Life",
+      "escalation_level": 3
+    },
+    {
+      "id": "RULE_STROKE_FAST",
+      "label": "Headache with Facial Droop, Weakness, or Slurred Speech",
+      "escalation_level": 3
+    }
+  ],
+  "counterfactuals": [
+    {
+      "condition": "If headache onset was sudden and explosive ('thunderclap')",
+      "resulting_urgency": 3,
+      "recommendation_shift": "Escalates immediately to Emergency (Level 3)"
+    },
+    {
+      "condition": "If accompanied by fever and neck stiffness",
+      "resulting_urgency": 3,
+      "recommendation_shift": "Escalates immediately to Emergency (Level 3) for meningitis screening"
+    },
+    {
+      "condition": "If pain remains mild-to-moderate with no neurological signs and resolves within 48 hours",
+      "resulting_urgency": 0,
+      "recommendation_shift": "Appropriate for Self-Care & Primary Care follow-up"
+    }
+  ]
+}

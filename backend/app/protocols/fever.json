@@ -1,0 +1,59 @@
+{
+  "protocol_id": "PROTO_FEVER",
+  "symptom_key": "fever",
+  "display_name": "Fever & Elevated Temperature",
+  "clinician_review_status": "unreviewed_demo_protocol_v1",
+  "version": "1.0",
+  "core_questions": [
+    {
+      "id": "Q_FEVER_AGE",
+      "field": "age_group",
+      "question": "Who is experiencing the fever (infant under 3 months, child, adult, or senior)?",
+      "quick_replies": ["Adult (18-64)", "Child (2-17)", "Infant (< 3 months)", "Senior (65+)"],
+      "safety_implication": "Infants < 3 months with fever require urgent pediatric/emergency care."
+    },
+    {
+      "id": "Q_FEVER_DURATION",
+      "field": "duration",
+      "question": "How many days has the fever been present, and have you measured the temperature with a thermometer?",
+      "quick_replies": ["Started today", "1-2 days (around 100-101°F)", "3-4 days", "More than 5 days"],
+      "safety_implication": "Fever persisting > 3-4 days warrants prompt medical evaluation."
+    },
+    {
+      "id": "Q_FEVER_RED_FLAGS",
+      "field": "associated_symptoms",
+      "question": "Are there any high-risk signs such as extreme lethargy, purple/dark rash that doesn't fade, or trouble breathing?",
+      "quick_replies": ["None of these", "Trouble catching breath", "Lethargy / hard to wake up", "Rash with fever"],
+      "safety_implication": "Non-blanching rash or severe lethargy with fever is a medical emergency."
+    }
+  ],
+  "warning_signs": [
+    {
+      "id": "RULE_INFANT_FEVER",
+      "label": "Infant High Fever (< 3 months)",
+      "escalation_level": 3
+    },
+    {
+      "id": "RULE_SEV_BREATHING",
+      "label": "Fever with Severe Respiratory Distress",
+      "escalation_level": 3
+    }
+  ],
+  "counterfactuals": [
+    {
+      "condition": "If patient is an infant under 3 months",
+      "resulting_urgency": 3,
+      "recommendation_shift": "Escalates immediately to Emergency (Level 3)"
+    },
+    {
+      "condition": "If fever persists longer than 3-4 days without improvement",
+      "resulting_urgency": 2,
+      "recommendation_shift": "Moves from Routine to Urgent Medical Care (Level 2)"
+    },
+    {
+      "condition": "If temperature stays below 102°F, patient is well hydrated, and fever subsides within 48h",
+      "resulting_urgency": 0,
+      "recommendation_shift": "Managed safely with Self-Care & Hydration (Level 0)"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, RotateCcw, Edit3, AlertCircle, Loader2, FileText } from 'lucide-react';
+import { Send, RotateCcw, Edit3, AlertCircle, Loader2, FileText, Mic, MicOff } from 'lucide-react';
 import MessageBubble from './MessageBubble';
 import QuickReplies from './QuickReplies';
 import SeveritySlider from './SeveritySlider';
@@ -18,8 +18,10 @@ export default function ChatWindow({
   facts = {},
 }) {
   const [inputText, setInputText] = useState('');
+  const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const recognitionRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -28,6 +30,47 @@ export default function ChatWindow({
   useEffect(() => {
     scrollToBottom();
   }, [messages, isLoading]);
+
+  // Voice speech-to-text setup
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        setInputText((prev) => (prev ? `${prev} ${transcript}` : transcript));
+        setIsListening(false);
+      };
+
+      recognition.onerror = () => {
+        setIsListening(false);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognitionRef.current = recognition;
+    }
+  }, []);
+
+  const toggleVoiceInput = () => {
+    if (!recognitionRef.current) {
+      alert("Speech recognition is not supported in this browser. Please use Google Chrome or Edge.");
+      return;
+    }
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      setIsListening(true);
+      recognitionRef.current.start();
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -41,7 +84,6 @@ export default function ChatWindow({
     onSendMessage(reply);
   };
 
-  // Determine if we should show the severity selector helper
   const shouldShowSeverity = facts && facts.severity === undefined && !readyForReport && !escalated;
 
   return (
@@ -139,7 +181,7 @@ export default function ChatWindow({
         {/* Quick-reply chip buttons */}
         <QuickReplies replies={quickReplies} onSelect={handleQuickReply} disabled={isLoading} />
 
-        {/* Text Input Box */}
+        {/* Text Input Box with Voice Mic */}
         <form onSubmit={handleSubmit} className="flex items-center gap-2">
           <div className="relative flex-1">
             <input
@@ -148,12 +190,16 @@ export default function ChatWindow({
               value={inputText}
               onChange={(e) => setInputText(e.target.value.slice(0, 1000))}
               placeholder={
-                escalated
+                isListening
+                  ? 'Listening... speak clearly into your microphone'
+                  : escalated
                   ? 'Emergency triggered. Please call emergency services immediately.'
                   : 'Describe your symptoms or answer the question above...'
               }
               disabled={isLoading || escalated}
-              className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 disabled:bg-slate-100 disabled:cursor-not-allowed pr-16"
+              className={`w-full px-4 py-2.5 bg-white border ${
+                isListening ? 'border-rose-500 ring-2 ring-rose-200' : 'border-slate-300'
+              } rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 disabled:bg-slate-100 disabled:cursor-not-allowed pr-20`}
             />
             {inputText.length > 800 && (
               <span className="absolute right-3 top-2.5 text-[10px] text-slate-400">
@@ -161,6 +207,24 @@ export default function ChatWindow({
               </span>
             )}
           </div>
+
+          {/* Voice Input Button */}
+          <button
+            type="button"
+            onClick={toggleVoiceInput}
+            disabled={isLoading || escalated}
+            className={`p-2.5 rounded-xl border transition-all ${
+              isListening
+                ? 'bg-rose-600 text-white border-rose-600 animate-pulse'
+                : 'bg-white hover:bg-slate-100 text-slate-600 border-slate-300'
+            } focus:outline-none focus:ring-2 focus:ring-rose-500 flex-shrink-0`}
+            title={isListening ? "Stop listening" : "Click to speak your symptoms"}
+            aria-label="Voice input"
+          >
+            {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+          </button>
+
+          {/* Send Button */}
           <button
             type="submit"
             disabled={!inputText.trim() || isLoading || escalated}

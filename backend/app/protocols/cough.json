@@ -1,0 +1,59 @@
+{
+  "protocol_id": "PROTO_COUGH",
+  "symptom_key": "cough",
+  "display_name": "Cough & Respiratory Tract Symptoms",
+  "clinician_review_status": "unreviewed_demo_protocol_v1",
+  "version": "1.0",
+  "core_questions": [
+    {
+      "id": "Q_COUGH_BREATHING",
+      "field": "associated_symptoms",
+      "question": "Are you experiencing any shortness of breath, wheezing, or difficulty speaking in complete sentences?",
+      "quick_replies": ["No breathing trouble", "Mild wheezing", "Struggling to catch breath", "Pain when breathing"],
+      "safety_implication": "Shortness of breath or inability to speak in sentences is an acute red flag."
+    },
+    {
+      "id": "Q_COUGH_SPUTUM",
+      "field": "sputum",
+      "question": "Is the cough dry or productive, and have you coughed up any blood or rust-colored phlegm?",
+      "quick_replies": ["Dry cough", "Clear/white phlegm", "Yellow/green phlegm", "Coughed up blood"],
+      "safety_implication": "Hemoptysis (coughing up blood) requires immediate urgent/emergency medical review."
+    },
+    {
+      "id": "Q_COUGH_DURATION",
+      "field": "duration",
+      "question": "How long have you had this cough?",
+      "quick_replies": ["Just started today", "A few days", "1 to 2 weeks", "More than 3-4 weeks"],
+      "safety_implication": "Chronic cough > 3 weeks requires routine primary care workup."
+    }
+  ],
+  "warning_signs": [
+    {
+      "id": "RULE_SEV_BREATHING",
+      "label": "Severe Respiratory Distress / Gasping",
+      "escalation_level": 3
+    },
+    {
+      "id": "RULE_UNCONTROLLED_BLEEDING",
+      "label": "Coughing up Significant Blood",
+      "escalation_level": 3
+    }
+  ],
+  "counterfactuals": [
+    {
+      "condition": "If patient develops shortness of breath or lips turn blue",
+      "resulting_urgency": 3,
+      "recommendation_shift": "Escalates immediately to Emergency (Level 3)"
+    },
+    {
+      "condition": "If cough is productive of blood or accompanied by high fever > 3 days",
+      "resulting_urgency": 2,
+      "recommendation_shift": "Moves to Urgent Care (Level 2) for chest X-ray / exam"
+    },
+    {
+      "condition": "If cough is mild, dry, without fever or dyspnea and improving within 7 days",
+      "resulting_urgency": 0,
+      "recommendation_shift": "Appropriate for Self-Care & Hydration (Level 0)"
+    }
+  ]
+}

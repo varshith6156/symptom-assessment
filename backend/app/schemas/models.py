@@ -115,6 +115,12 @@ class Report(BaseModel):
     fixed_limitations: List[str]
     generated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     ruleset_version: str = "demo-rules-v1.0 (unreviewed prototype)"
+    protocol_used: Optional[str] = None
+    contributing_factors: List[Dict[str, Any]] = Field(default_factory=list)
+    counterfactuals: List[Dict[str, Any]] = Field(default_factory=list)
+    uncertainty_rating: str = "Moderate"
+    uncertainty_reasons: List[str] = Field(default_factory=list)
+    doctor_summary_sbar: Dict[str, str] = Field(default_factory=dict)
 
 # API Requests & Responses
 class CreateSessionResponse(BaseModel):

@@ -1,0 +1,59 @@
+{
+  "protocol_id": "PROTO_ABDOMINAL",
+  "symptom_key": "abdominal_pain",
+  "display_name": "Abdominal & Stomach Pain",
+  "clinician_review_status": "unreviewed_demo_protocol_v1",
+  "version": "1.0",
+  "core_questions": [
+    {
+      "id": "Q_ABDOMINAL_SEVERITY_LOCATION",
+      "field": "severity",
+      "question": "Where is the pain located (e.g. lower right, upper center), and is it sharp, cramping, or constant severe pain?",
+      "quick_replies": ["Mild dull ache", "Cramping with nausea", "Sharp pain lower right side", "Severe unbearable 9-10"],
+      "safety_implication": "Lower right quadrant sharp pain or rigid abdomen suggests acute appendicitis/peritoneal irritation."
+    },
+    {
+      "id": "Q_ABDOMINAL_RED_FLAGS",
+      "field": "associated_symptoms",
+      "question": "Have you noticed any vomiting blood, black tarry stools, yellowing of skin/eyes, or dizziness when standing?",
+      "quick_replies": ["None of these", "Dizziness / felt like fainting", "Vomited coffee-ground material", "Dark tarry stools"],
+      "safety_implication": "GI bleeding signs (hematemesis or melena) are medical emergencies."
+    },
+    {
+      "id": "Q_ABDOMINAL_PREGNANCY",
+      "field": "pregnancy_status",
+      "question": "If applicable, is there any possibility of pregnancy?",
+      "quick_replies": ["No", "Yes / Possible", "Not applicable"],
+      "safety_implication": "Abdominal pain with possible pregnancy requires ruling out ectopic pregnancy."
+    }
+  ],
+  "warning_signs": [
+    {
+      "id": "RULE_UNCONTROLLED_BLEEDING",
+      "label": "Vomiting Blood or GI Hemorrhage",
+      "escalation_level": 3
+    },
+    {
+      "id": "RULE_PERSISTENT_WORSENING",
+      "label": "Acute Rigid Abdomen or Severe 9-10 Pain",
+      "escalation_level": 2
+    }
+  ],
+  "counterfactuals": [
+    {
+      "condition": "If pain is accompanied by black tarry stools, vomiting blood, or fainting",
+      "resulting_urgency": 3,
+      "recommendation_shift": "Escalates immediately to Emergency (Level 3)"
+    },
+    {
+      "condition": "If severe pain focalizes to lower right abdomen with fever",
+      "resulting_urgency": 2,
+      "recommendation_shift": "Urgent Care / Emergency Evaluation needed for appendicitis"
+    },
+    {
+      "condition": "If mild stomach upset following a known meal with no fever or dehydration",
+      "resulting_urgency": 0,
+      "recommendation_shift": "Self-Care & Bland Diet (Level 0)"
+    }
+  ]
+}

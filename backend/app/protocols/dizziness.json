@@ -1,0 +1,59 @@
+{
+  "protocol_id": "PROTO_DIZZINESS",
+  "symptom_key": "dizziness",
+  "display_name": "Dizziness, Vertigo & Lightheadedness",
+  "clinician_review_status": "unreviewed_demo_protocol_v1",
+  "version": "1.0",
+  "core_questions": [
+    {
+      "id": "Q_DIZZINESS_NEURO",
+      "field": "associated_symptoms",
+      "question": "Are you experiencing any double vision, slurred speech, weakness/numbness on one side of your face or body, or difficulty walking?",
+      "quick_replies": ["No neurological symptoms", "Slurred speech or face droop", "One-sided numbness or weakness", "Trouble walking / ataxia"],
+      "safety_implication": "Dizziness with focal neurological deficits strongly suggests acute posterior circulation stroke."
+    },
+    {
+      "id": "Q_DIZZINESS_CHEST",
+      "field": "associated_symptoms",
+      "question": "Is the dizziness accompanied by chest pain, rapid fluttering heartbeat (palpitations), or shortness of breath?",
+      "quick_replies": ["No chest symptoms", "Palpitations / racing heart", "Chest tightness or pressure", "Shortness of breath"],
+      "safety_implication": "Dizziness with cardiac symptoms suggests arrhythmia or hemodynamic instability."
+    },
+    {
+      "id": "Q_DIZZINESS_FAINTING",
+      "field": "worsening_status",
+      "question": "Did you actually pass out / lose consciousness, or just feel lightheaded when standing up?",
+      "quick_replies": ["Lightheaded only when standing", "Passed out / blacked out", "Room is spinning (vertigo)", "Constant unsteadiness"],
+      "safety_implication": "Syncope (loss of consciousness) requires clinical evaluation to rule out cardiac/neurologic causes."
+    }
+  ],
+  "warning_signs": [
+    {
+      "id": "RULE_STROKE_FAST",
+      "label": "Dizziness with Slurred Speech or One-Sided Weakness",
+      "escalation_level": 3
+    },
+    {
+      "id": "RULE_UNRESPONSIVE",
+      "label": "Syncope / Blackout with Injury",
+      "escalation_level": 3
+    }
+  ],
+  "counterfactuals": [
+    {
+      "condition": "If accompanied by face drooping, speech slurring, or arm weakness",
+      "resulting_urgency": 3,
+      "recommendation_shift": "Escalates immediately to Emergency (Level 3)"
+    },
+    {
+      "condition": "If true spinning sensation (vertigo) with vomiting or hearing changes",
+      "resulting_urgency": 2,
+      "recommendation_shift": "Urgent Care / ENT evaluation (Level 2)"
+    },
+    {
+      "condition": "If brief lightheadedness upon standing up quickly that resolves in seconds",
+      "resulting_urgency": 0,
+      "recommendation_shift": "Self-Care (Hydration, slow position changes) (Level 0)"
+    }
+  ]
+}
